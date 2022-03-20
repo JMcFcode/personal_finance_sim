@@ -16,7 +16,6 @@ import wealth_config
 sns.set()
 
 
-#Py
 class MoneySimulator:
     """
     Tools for the modelling of personal finance.
