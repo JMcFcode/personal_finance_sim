@@ -33,9 +33,9 @@ class MoneySimulator:
         self.bonus_std_prop = wealth_config.bonus_std_prop
         self.month_non_rent = wealth_config.month_non_rent
         self.spend_grow = wealth_config.spend_grow
+
         self.year_home = wealth_config.year_home
         self.year_rent = wealth_config.year_rent
-
         self.rent_home = wealth_config.rent_home
         self.rent_away = wealth_config.rent_away
 
@@ -47,9 +47,16 @@ class MoneySimulator:
         self.house_inf = wealth_config.house_inf
         self.house_inf_std = wealth_config.house_inf_std
 
-        self.colour_main = 'orange'
-        self.label = self.house_type + ' £' + str(self.house_cost) + 'k. ' + str(
-            self.year_home) + ' years at home. ' + str(self.year_rent) + ' years rent.'
+        self.colour_main = wealth_config.color_main
+
+        house_label = 'No house. ' if len(salary_list) < self.year_home + self.year_rent\
+            else self.house_type + ' in ' + str(self.year_home + self.year_rent) + 'y at ' \
+                 + str(self.house_cost) + 'k. '
+        btl_label = 'No BTL. ' if len(wealth_config.btl_dict) == 0 else str(len(wealth_config.btl_dict)) \
+                                                                        + ' BTL house(s). '
+        rent_label = str(self.year_home) + 'y home. ' + str(self.year_rent) + 'y rent. '
+
+        self.label = house_label + btl_label + rent_label
 
         self.show_extra = wealth_config.show_extra
         self.show_breakdown = wealth_config.show_breakdown
@@ -348,8 +355,7 @@ class MoneySimulator:
                                                   dict_df['Current Value'].std(axis=1),
                                 'Mean + 2 sigma': dict_df['Current Value'].mean(axis=1) + 2 *
                                                   dict_df['Current Value'].std(axis=1),
-                                'Std': dict_df['Current Value'].mean(axis=1) - 2 *
-                                       dict_df['Current Value'].std(axis=1)})
+                                'Std': dict_df['Current Value'].std(axis=1)})
 
         plt.xlabel('Years')
         plt.ylabel('Net Worth £ (k)')

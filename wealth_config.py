@@ -10,7 +10,7 @@ Created on Sun Mar 20 10:14:20 2022
 r_avg = 0.07  # Average return on liquid investments.
 r_std = 0.15  # Standard deviation on the return on investments.
 
-bonus_std_prop = 0.5  # Standard deviation on bonuses as a proportion of each years bonus
+bonus_std_prop = 0.5  # Standard deviation on bonuses as a proportion of each year's bonus
 bonus_spend_rate = 0.2  # Proportion of bonus after tax that is spent on non-asset purchases
 
 month_non_rent = 1.4  # Amount in thousands spent per month not including rent.
@@ -23,16 +23,20 @@ rent_home = 0.4  # Cost of living at home
 rent_away = 1.5  # Cost of renting outside the home
 
 deposit = 0.25  # Deposit on house as a proportion of house cost.
-house_cost = 700  # Price paid for a house in thousands.
+house_cost = 600  # Price paid for a house in thousands.
 mortgage_rate = 0.03  # Interest rate on mortgage.
 house_type = 'normal'  # Type of purchase on house, "normal" or "htb"
 
 house_inf = 0.09  # Rate on house price inflation as a %
 house_inf_std = 0.15  # Standard deviation on house price inflation as a %
 
-show_extra = False  # Show the mean liquid and illiquid assets
-show_breakdown = True   # Show the results of every simulation and results two sigma up and down.
+show_breakdown = True  # Show the mean liquid and illiquid assets
+show_extra = True   # Show the results of every simulation and results two sigma up and down.
 
-btl_dict = {1: [100, 25, 1],
-            5: [130, 35, 1.2],
-            6: [150, 50, 1.3]}   # Key = Year, list = [house_price, deposit_amount, rent_per_month] (all in thousands)
+color_main = 'orange'
+
+# btl_dict = {1: [100, 25, 1],
+#             5: [130, 35, 1.2],
+#             6: [150, 50, 1.3]}   # Key = Year, list = [house_price, deposit_amount, rent_per_month] (all in thousands)
+
+btl_dict = {}
