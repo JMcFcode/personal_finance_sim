@@ -17,7 +17,7 @@ month_non_rent = 1.4  # Amount in thousands spent per month not including rent.
 spend_grow = 1.1  # Proportion per year that non-rent spending will grow by
 
 year_home = 0  # Years living at home
-year_rent = 4  # Years renting out of the house after living at home but before buying a house
+year_rent = 100  # Years renting out of the house after living at home but before buying a house
 
 rent_home = 0.4  # Cost of living at home
 rent_away = 1.5  # Cost of renting outside the home
@@ -30,5 +30,8 @@ house_type = 'normal'  # Type of purchase on house, "normal" or "htb"
 house_inf = 0.09  # Rate on house price inflation as a %
 house_inf_std = 0.15  # Standard deviation on house price inflation as a %
 
-btl_dict = {1: [100, 25, 0.8],
-            5: [130, 32.5, 1.2]}   # Key = Year, list = [house_price, deposit_amount, rent_target] (thousands)
+btl_dict = {1: [100, 25, 1],
+            5: [130, 35, 1.2],
+            6: [150, 50, 1.3]}   # Key = Year, list = [house_price, deposit_amount, rent_per_month] (thousands)
+
+# btl_dict = {}
