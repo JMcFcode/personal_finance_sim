@@ -16,12 +16,14 @@ import wealth_config
 sns.set()
 
 
+#Py
 class MoneySimulator:
     """
     Tools for the modelling of personal finance.
     """
 
     def __init__(self, initial_saving: float, salary_list: list, bonus_list: list):
+        self.dict_df = None
         self.initial_saving = initial_saving
         self.salary_list = salary_list
         self.bonus_list = bonus_list
@@ -50,8 +52,8 @@ class MoneySimulator:
         self.label = self.house_type + ' £' + str(self.house_cost) + 'k. ' + str(
             self.year_home) + ' years at home. ' + str(self.year_rent) + ' years rent.'
 
-        self.show_extra = False
-        self.show_breakdown = True
+        self.show_extra = wealth_config.show_extra
+        self.show_breakdown = wealth_config.show_breakdown
 
     @staticmethod
     def tax_calc(salary: float, bonus: float) -> float:
@@ -109,8 +111,6 @@ class MoneySimulator:
         """
         Calculate how much I will have saved of the cash and bonus.
         """
-
-        curr_val = copy(self.initial_saving)
         list_curr_val = [self.initial_saving]
         list_liq = [self.initial_saving]
         list_ill = [0]
@@ -131,8 +131,8 @@ class MoneySimulator:
             if len(wealth_config.btl_dict) > 0:
                 for year_purchased, list_info in wealth_config.btl_dict.items():
                     mortgage, interest, one_time, initial_dep, rent = self.btl_finance(year=i,
-                                                                                 year_purchased=year_purchased,
-                                                                                 list_info=list_info)
+                                                                                       year_purchased=year_purchased,
+                                                                                       list_info=list_info)
                     btl_mortgage_payment += mortgage * 12  # per year
                     btl_interest_payment += interest * 12  # per year
                     btl_one_time_costs += one_time  # per year
@@ -335,10 +335,6 @@ class MoneySimulator:
             if self.show_extra:
                 plt.plot(years_array, data_scenario['Current Value'], linewidth=0.1, color='b')
 
-        # df_all = pd.DataFrame(data_all_scenario['Current Value']).T
-        # df_liq = pd.DataFrame(data_all_scenario['Liquid']).T
-        # df_ill = pd.DataFrame(data_all_scenario['Illiquid']).T
-
         dict_df = {}
         for cat in data_str:
             dict_df[cat] = pd.DataFrame(data_all_scenario[cat]).T
@@ -369,25 +365,12 @@ class MoneySimulator:
 
         plt.legend(loc='best')
 
+        self.dict_df = dict_df
+
         return df
 
-# list_salary = [70, 90, 100, 110, 130, 145, 165]
-# list_bonus = [70,80,100,120,120,130,140]    # Optimistic Scenario
-# list_bonus = [i * 0.5 for i in list_salary]  # Multiple of salary|
-
-# test_class = MoneySimulator(salary_list=list_salary, bonus_list=list_bonus, initial_saving=60)
-# net_income = test_class.tax_ni(salary=65, bonus=60, logs=True)
-# list_net_worth = test_class.saving_calc(7)
-
-# df_scenario = test_class.run_scenario()
-
-# stamp_duty = test_class.stamp_duty_calc(500)
-# monthly_payment, interest, equity_loan = test_class.mortgage_htb(500, r=0.0359, mortgage_length=25) 
-# monthly_payment, interest = test_class.mortgage(700, r=0.02, mortgage_length=25) 
-
-# net_income = test_class.tax_ni(salary = 65, bonus = 65, logs=True)
-# net_bonus = net_income - test_class.tax_ni(salary = 65, bonus = 0, logs=False)
-
-
-# sim_class = MoneySimulator(initial_saving=0, salary_list=0, bonus_list=0)
-# after_tax_olha = sim_class.tax_ni(salary=58, bonus=0)
+    def get_all_data(self) -> dict:
+        """
+        Access the complete results of the simulation.
+        """
+        return self.dict_df
