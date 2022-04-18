@@ -16,14 +16,14 @@ bonus_spend_rate = 0.2  # Proportion of bonus after tax that is spent on non-ass
 month_non_rent = 1.4  # Amount in thousands spent per month not including rent.
 spend_grow = 1.1  # Proportion per year that non-rent spending will grow by
 
-year_home = 0  # Years living at home. Note that default order is:  live at home -> rent -> buy house
-year_rent = 3  # Years renting out of the house after living at home but before buying a house
+year_home = 1  # Years living at home. Note that default order is:  live at home -> rent -> buy house
+year_rent = 2  # Years renting out of the house after living at home but before buying a house
 
 rent_home = 0.4  # Cost of living at home
 rent_away = 1.5  # Cost of renting outside the home
 
 deposit = 0.25  # Deposit on house as a proportion of house cost.
-house_cost = 600  # Price paid for a house in thousands.
+house_cost = 700  # Price paid for a house in thousands.
 mortgage_rate = 0.03  # Interest rate on mortgage.
 house_type = 'normal'  # Type of purchase on house, "normal" or "htb"
 
@@ -35,8 +35,7 @@ show_extra = True   # Show the results of every simulation and results two sigma
 
 color_main = 'orange'
 
-# btl_dict = {1: [100, 25, 1],
-#             5: [130, 35, 1.2],
-#             6: [150, 50, 1.3]}   # Key = Year, list = [house_price, deposit_amount, rent_per_month] (all in thousands)
+# btl_dict = {6: [300, 75, 3],
+            # }   # Key = Year, list = [house_price, deposit_amount, rent_per_month] (all in thousands)
 
 btl_dict = {}

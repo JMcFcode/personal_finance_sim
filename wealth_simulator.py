@@ -223,7 +223,7 @@ class MoneySimulator:
                 principal = monthly_payment - interest
                 return interest + non_rent_costs, principal, equity_loan
             elif house_type == 'normal':
-                monthly_payment, interest = self.mortgage(house_cost=self.house_cost,
+                monthly_payment, interest = self.mortgage_normal(house_cost=self.house_cost,
                                                           r=self.mortgage_rate,
                                                           mortgage_length=25,
                                                           deposit=self.deposit)
@@ -279,7 +279,7 @@ class MoneySimulator:
         return monthly_payment, interest_payment, equity_loan
 
     @staticmethod
-    def mortgage(house_cost: float, r: float, mortgage_length: int, deposit: float = 0.20) -> (float, float):
+    def mortgage_normal(house_cost: float, r: float, mortgage_length: int, deposit: float = 0.20) -> (float, float):
         """
         Calculate the initial cost plus the monthly interest and principal payment.
         NOT HELP TO BUY.
@@ -312,7 +312,7 @@ class MoneySimulator:
 
         total_one_time = stamp_duty + other_costs_buy
 
-        mortgage_payment, interest_payment = self.mortgage(house_cost=house_price,
+        mortgage_payment, interest_payment = self.mortgage_normal(house_cost=house_price,
                                                            r=self.mortgage_rate,
                                                            mortgage_length=25,
                                                            deposit=deposit / house_price)
