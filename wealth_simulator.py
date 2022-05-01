@@ -62,12 +62,14 @@ class MoneySimulator:
         self.show_breakdown = wealth_config.show_breakdown
 
     @staticmethod
-    def tax_calc(salary: float, bonus: float) -> float:
+    def tax_calc(salary: float, bonus: float, logs: bool = False) -> (float, str):
         """
         Calculate the amount left after tax.
         """
         tax_buckets = [0, 12.57, 50.27, 150, np.inf]
+        tax_bands = ['Personal Allowance', 'Basic', 'Higher', 'Additional']
         tax_rate = [0, 0.2, 0.4, 0.45]
+        tax_band = 'Personal Allowance'
 
         tax_income = salary + bonus
         tax_paid = 0
@@ -79,8 +81,11 @@ class MoneySimulator:
             if tax_income > tax_buckets[i + 1]:
                 tax_paid += (tax_buckets[i + 1] - tax_buckets[i]) * tax_rate[i]
             else:
+                tax_band = tax_bands[i]
                 tax_paid += (tax_income - tax_buckets[i]) * tax_rate[i]
-                return tax_paid
+                if logs:
+                    print(tax_band)
+                return tax_paid, tax_band
 
     @staticmethod
     def ni_calc(salary: float, bonus: float) -> float:
@@ -103,7 +108,7 @@ class MoneySimulator:
         """
         Find out how much tax + ni you've paid.
         """
-        tax_paid = self.tax_calc(salary, bonus)
+        tax_paid, tax_band = self.tax_calc(salary, bonus)
         ni_paid = self.ni_calc(salary, bonus)
 
         net_income = salary + bonus - ni_paid - tax_paid

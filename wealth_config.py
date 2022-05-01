@@ -23,7 +23,7 @@ rent_home = 0.4  # Cost of living at home
 rent_away = 1.5  # Cost of renting outside the home
 
 deposit = 0.25  # Deposit on house as a proportion of house cost.
-house_cost = 700  # Price paid for a house in thousands.
+house_cost = 800  # Price paid for a house in thousands.
 mortgage_rate = 0.03  # Interest rate on mortgage.
 house_type = 'normal'  # Type of purchase on house, "normal" or "htb"
 
