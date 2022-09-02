@@ -319,7 +319,7 @@ class MoneySimulator:
 
         mortgage_payment, interest_payment = self.mortgage_normal(house_cost=house_price,
                                                            r=self.mortgage_rate,
-                                                           mortgage_length=25,
+                                                           mortgage_length=wealth_config.mortgage_length,
                                                            deposit=deposit / house_price)
 
         other_costs_ongoing = rent * 0.1  # Estimated other costs as 10% of the rent.
