@@ -50,10 +50,10 @@ class MoneySimulator:
         self.colour_main = wealth_config.color_main
 
         house_label = 'No house. ' if len(salary_list) < self.year_home + self.year_rent\
-            else self.house_type + ' in ' + str(self.year_home + self.year_rent) + 'y at ' \
-                 + str(self.house_cost) + 'k. '
-        btl_label = 'No BTL. ' if len(wealth_config.btl_dict) == 0 else str(len(wealth_config.btl_dict)) \
-                                                                        + ' BTL house(s). '
+            else self.house_type + ' in ' + str(self.year_home +
+                                                self.year_rent) + 'y at ' + str(self.house_cost) + 'k. '
+        btl_label = 'No BTL. ' if len(wealth_config.btl_dict) == 0 else \
+            str(len(wealth_config.btl_dict)) + ' BTL house(s). '
         rent_label = str(self.year_home) + 'y home. ' + str(self.year_rent) + 'y rent. '
 
         self.label = house_label + btl_label + rent_label
@@ -69,7 +69,6 @@ class MoneySimulator:
         tax_buckets = [0, 12.57, 50.27, 150, np.inf]
         tax_bands = ['Personal Allowance', 'Basic', 'Higher', 'Additional']
         tax_rate = [0, 0.2, 0.4, 0.45]
-        tax_band = 'Personal Allowance'
 
         tax_income = salary + bonus
         tax_paid = 0
@@ -229,9 +228,9 @@ class MoneySimulator:
                 return interest + non_rent_costs, principal, equity_loan
             elif house_type == 'normal':
                 monthly_payment, interest = self.mortgage_normal(house_cost=self.house_cost,
-                                                          r=self.mortgage_rate,
-                                                          mortgage_length=25,
-                                                          deposit=self.deposit)
+                                                                 r=self.mortgage_rate,
+                                                                 mortgage_length=25,
+                                                                 deposit=self.deposit)
                 principal = monthly_payment - interest
                 return interest + non_rent_costs, principal, equity_loan
 
@@ -318,9 +317,9 @@ class MoneySimulator:
         total_one_time = stamp_duty + other_costs_buy
 
         mortgage_payment, interest_payment = self.mortgage_normal(house_cost=house_price,
-                                                           r=self.mortgage_rate,
-                                                           mortgage_length=wealth_config.mortgage_length,
-                                                           deposit=deposit / house_price)
+                                                                  r=self.mortgage_rate,
+                                                                  mortgage_length=wealth_config.mortgage_length,
+                                                                  deposit=deposit / house_price)
 
         other_costs_ongoing = rent * 0.1  # Estimated other costs as 10% of the rent.
         return mortgage_payment, interest_payment + other_costs_ongoing, total_one_time, initial_dep, rent
