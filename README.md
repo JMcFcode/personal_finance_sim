@@ -1,5 +1,5 @@
 # Wealth Simulator
-Wealth Simulator is a class that enables you to track you net worth in the UK
+Wealth Simulator is a class that enables your to track you net worth in the UK
 given a set of scenarios.
 
 Currently, supported are investing in the equity market, investing in buy to let 
