@@ -10,7 +10,10 @@ Salary each year is treated as a static variable, however bonuses, market perfor
 and house price change are all treated as random variables.
 
 The code fully takes into account income tax and national insurance
-calculations as they will be from 2022 onwards.
+calculations as they will be from April 2023 (As of November 2022).
+
+Student Loan contributions and Shared ownership calculations currently not included,
+however these can be added if needed.
 
 ## Installation
 Following imports required:

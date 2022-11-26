@@ -66,7 +66,7 @@ class MoneySimulator:
         """
         Calculate the amount left after tax.
         """
-        tax_buckets = [0, 12.57, 50.27, 150, np.inf]
+        tax_buckets = [0, 12.57, 50.27, 125.140, np.inf]
         tax_bands = ['Personal Allowance', 'Basic', 'Higher', 'Additional']
         tax_rate = [0, 0.2, 0.4, 0.45]
 
@@ -91,8 +91,8 @@ class MoneySimulator:
         """
         Calculate the amount of national insurance paid.
         """
-        ni_buckets = [0, 9.55, 50.25, np.inf]
-        ni_rate = [0, 0.1325, 0.0325]
+        ni_buckets = [0, 12.57, 50.27, np.inf]
+        ni_rate = [0, 0.12, 0.02]
 
         ni_income = salary + bonus
         ni_paid = 0
@@ -165,10 +165,12 @@ class MoneySimulator:
 
             liq_inv = self.yearly_ret(start_val=liq_inv,
                                       month_save=monthly_save,
-                                      r=np.random.normal(self.r_avg, self.r_avg))
+                                      r=self.r_avg,
+                                      std=self.r_std)
             ill_inv = self.yearly_ret(start_val=ill_inv,
                                       month_save=principal_month + btl_mortgage_payment / 12,
-                                      r=np.random.normal(self.house_inf, self.house_inf_std))
+                                      r=self.house_inf,
+                                      std=self.house_inf_std)
 
             liq_inv += net_bonus * (1 - self.bonus_spend_rate) - btl_one_time_costs
 
@@ -235,14 +237,17 @@ class MoneySimulator:
                 return interest + non_rent_costs, principal, equity_loan
 
     @staticmethod
-    def yearly_ret(start_val: float, month_save: float, r: float) -> float:
+    def yearly_ret(start_val: float, month_save: float, r: float, std: float) -> float:
         """
         Calculate earnings at the monthly rate.
         """
-        curr_val = copy(start_val)
-        for i in range(12):
-            curr_val = (curr_val + month_save) * (1 + r / 12)
-        return curr_val
+        n = 12
+        r_val = np.random.normal(r, std)
+        curr_val = start_val * (1 + r_val)
+        monthly_savings = []
+        for i in range(n):
+            monthly_savings.append(month_save * (1 + (n-i)/n * r_val))
+        return curr_val + sum(monthly_savings)
 
     @staticmethod
     def stamp_duty_calc(house_cost: float, main_residence: bool = True, first_home: bool = True) -> float:
