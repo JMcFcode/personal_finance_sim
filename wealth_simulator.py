@@ -9,7 +9,6 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from copy import copy
 
 import wealth_config
 
@@ -49,7 +48,7 @@ class MoneySimulator:
 
         self.colour_main = wealth_config.color_main
 
-        house_label = 'No house. ' if len(salary_list) < self.year_home + self.year_rent\
+        house_label = 'No house. ' if len(salary_list) < self.year_home + self.year_rent \
             else self.house_type + ' in ' + str(self.year_home +
                                                 self.year_rent) + 'y at ' + str(self.house_cost) + 'k. '
         btl_label = 'No BTL. ' if len(wealth_config.btl_dict) == 0 else \
@@ -87,7 +86,7 @@ class MoneySimulator:
                 return tax_paid, tax_band
 
     @staticmethod
-    def ni_calc(salary: float, bonus: float) -> float:
+    def __ni_calc(salary: float, bonus: float) -> float:
         """
         Calculate the amount of national insurance paid.
         """
@@ -103,12 +102,12 @@ class MoneySimulator:
                 ni_paid += (ni_income - ni_buckets[i]) * ni_rate[i]
                 return ni_paid
 
-    def tax_ni(self, salary: float, bonus: float, logs: bool = False) -> float:
+    def __tax_ni(self, salary: float, bonus: float, logs: bool = False) -> float:
         """
         Find out how much tax + ni you've paid.
         """
         tax_paid, tax_band = self.tax_calc(salary, bonus)
-        ni_paid = self.ni_calc(salary, bonus)
+        ni_paid = self.__ni_calc(salary, bonus)
 
         net_income = salary + bonus - ni_paid - tax_paid
         if logs:
@@ -117,7 +116,7 @@ class MoneySimulator:
             print(f'Take home income is {net_income}')
         return net_income
 
-    def saving_calc(self, years: int) -> dict:
+    def __saving_calc(self, years: int) -> dict:
         """
         Calculate how much I will have saved of the cash and bonus.
         """
@@ -140,37 +139,37 @@ class MoneySimulator:
 
             if len(wealth_config.btl_dict) > 0:
                 for year_purchased, list_info in wealth_config.btl_dict.items():
-                    mortgage, interest, one_time, initial_dep, rent = self.btl_finance(year=i,
-                                                                                       year_purchased=year_purchased,
-                                                                                       list_info=list_info)
+                    mortgage, interest, one_time, initial_dep, rent = self.__btl_finance(year=i,
+                                                                                         year_purchased=year_purchased,
+                                                                                         list_info=list_info)
                     btl_mortgage_payment += mortgage * 12  # per year
                     btl_interest_payment += interest * 12  # per year
                     btl_one_time_costs += one_time  # per year
                     rental_income += rent  # per month
                     shift_liq_ill += initial_dep
 
-            net_sal = self.tax_ni(salary=self.salary_list[i] + (rental_income - btl_interest_payment), bonus=0)
+            net_sal = self.__tax_ni(salary=self.salary_list[i] + (rental_income - btl_interest_payment), bonus=0)
 
             bonus_rand = max(np.random.normal(self.bonus_list[i], self.bonus_list[i] * self.bonus_std_prop), 0)
-            net_bonus = self.tax_ni(salary=self.salary_list[i], bonus=bonus_rand) - net_sal
+            net_bonus = self.__tax_ni(salary=self.salary_list[i], bonus=bonus_rand) - net_sal
 
             net_sal = net_sal - (btl_mortgage_payment - btl_interest_payment)
             # Take into account the fact that interest is tax-deductible but mortgage principal isn't
 
-            sunk_cost_month, principal_month, equity_loan = self.month_costs(i)
+            sunk_cost_month, principal_month, equity_loan = self.__month_costs(i)
             monthly_save = net_sal / 12 - sunk_cost_month
 
             liq_inv -= shift_liq_ill
             ill_inv += shift_liq_ill  # Deposit shifts from liquid to illiquid capital
 
-            liq_inv = self.yearly_ret(start_val=liq_inv,
-                                      month_save=monthly_save,
-                                      r=self.r_avg,
-                                      std=self.r_std)
-            ill_inv = self.yearly_ret(start_val=ill_inv,
-                                      month_save=principal_month + btl_mortgage_payment / 12,
-                                      r=self.house_inf,
-                                      std=self.house_inf_std)
+            liq_inv = self.__yearly_ret(start_val=liq_inv,
+                                        month_save=monthly_save,
+                                        r=self.r_avg,
+                                        std=self.r_std)
+            ill_inv = self.__yearly_ret(start_val=ill_inv,
+                                        month_save=principal_month + btl_mortgage_payment / 12,
+                                        r=self.house_inf,
+                                        std=self.house_inf_std)
 
             liq_inv += net_bonus * (1 - self.bonus_spend_rate) - btl_one_time_costs
 
@@ -183,7 +182,7 @@ class MoneySimulator:
                     first_home = True
                 else:
                     first_home = False
-                liq_inv = liq_inv - (self.stamp_duty_calc(self.house_cost, first_home=first_home)
+                liq_inv = liq_inv - (self.__stamp_duty_calc(self.house_cost, first_home=first_home)
                                      + 5 + self.deposit * self.house_cost)
                 ill_inv += self.deposit * self.house_cost
 
@@ -208,7 +207,7 @@ class MoneySimulator:
 
         return data
 
-    def month_costs(self, year: int, house_type: str = 'htb') -> (float, float, float):
+    def __month_costs(self, year: int, house_type: str = 'htb') -> (float, float, float):
         """
         Calculate the amount spend on rent.
         """
@@ -222,22 +221,22 @@ class MoneySimulator:
             return self.rent_away + non_rent_costs, principal, equity_loan
         else:
             if house_type == 'htb':
-                monthly_payment, interest, equity_loan = self.mortgage_htb(house_cost=self.house_cost,
-                                                                           r=self.mortgage_rate,
-                                                                           mortgage_length=25,
-                                                                           deposit=self.deposit)
+                monthly_payment, interest, equity_loan = self.__mortgage_htb(house_cost=self.house_cost,
+                                                                             r=self.mortgage_rate,
+                                                                             mortgage_length=25,
+                                                                             deposit=self.deposit)
                 principal = monthly_payment - interest
                 return interest + non_rent_costs, principal, equity_loan
             elif house_type == 'normal':
-                monthly_payment, interest = self.mortgage_normal(house_cost=self.house_cost,
-                                                                 r=self.mortgage_rate,
-                                                                 mortgage_length=25,
-                                                                 deposit=self.deposit)
+                monthly_payment, interest = self.__mortgage_normal(house_cost=self.house_cost,
+                                                                   r=self.mortgage_rate,
+                                                                   mortgage_length=25,
+                                                                   deposit=self.deposit)
                 principal = monthly_payment - interest
                 return interest + non_rent_costs, principal, equity_loan
 
     @staticmethod
-    def yearly_ret(start_val: float, month_save: float, r: float, std: float) -> float:
+    def __yearly_ret(start_val: float, month_save: float, r: float, std: float) -> float:
         """
         Calculate earnings at the monthly rate.
         """
@@ -246,11 +245,11 @@ class MoneySimulator:
         curr_val = start_val * (1 + r_val)
         monthly_savings = []
         for i in range(n):
-            monthly_savings.append(month_save * (1 + (n-i)/n * r_val))
+            monthly_savings.append(month_save * (1 + (n - i) / n * r_val))
         return curr_val + sum(monthly_savings)
 
     @staticmethod
-    def stamp_duty_calc(house_cost: float, main_residence: bool = True, first_home: bool = True) -> float:
+    def __stamp_duty_calc(house_cost: float, main_residence: bool = True, first_home: bool = True) -> float:
         """
         Calculate the stamp duty when buying a house
         """
@@ -271,7 +270,7 @@ class MoneySimulator:
                     return stamp_duty
 
     @staticmethod
-    def mortgage_htb(house_cost: float, r: float, mortgage_length: float, deposit: float = 0.05) -> \
+    def __mortgage_htb(house_cost: float, r: float, mortgage_length: float, deposit: float = 0.05) -> \
             (float, float, float):
         """
         Calculate the initial cost plus the monthly interest and principal payment.
@@ -288,7 +287,7 @@ class MoneySimulator:
         return monthly_payment, interest_payment, equity_loan
 
     @staticmethod
-    def mortgage_normal(house_cost: float, r: float, mortgage_length: int, deposit: float = 0.20) -> (float, float):
+    def __mortgage_normal(house_cost: float, r: float, mortgage_length: int, deposit: float = 0.20) -> (float, float):
         """
         Calculate the initial cost plus the monthly interest and principal payment.
         NOT HELP TO BUY.
@@ -299,7 +298,7 @@ class MoneySimulator:
         interest_payment = (monthly_payment * 12 * mortgage_length - mortgage) / (mortgage_length * 12)
         return monthly_payment, interest_payment
 
-    def btl_finance(self, year: int, year_purchased: int, list_info: list) -> (float, float, float, float):
+    def __btl_finance(self, year: int, year_purchased: int, list_info: list) -> (float, float, float, float):
         """
         Calculate the net cost of BTL in any given year.
         """
@@ -312,7 +311,7 @@ class MoneySimulator:
 
         elif year == year_purchased:
             other_costs_buy = 5
-            stamp_duty = self.stamp_duty_calc(house_cost=house_price, first_home=False, main_residence=False)
+            stamp_duty = self.__stamp_duty_calc(house_cost=house_price, first_home=False, main_residence=False)
             initial_dep = deposit
         else:
             other_costs_buy = 0
@@ -321,10 +320,10 @@ class MoneySimulator:
 
         total_one_time = stamp_duty + other_costs_buy
 
-        mortgage_payment, interest_payment = self.mortgage_normal(house_cost=house_price,
-                                                                  r=self.mortgage_rate,
-                                                                  mortgage_length=wealth_config.mortgage_length,
-                                                                  deposit=deposit / house_price)
+        mortgage_payment, interest_payment = self.__mortgage_normal(house_cost=house_price,
+                                                                    r=self.mortgage_rate,
+                                                                    mortgage_length=wealth_config.mortgage_length,
+                                                                    deposit=deposit / house_price)
 
         other_costs_ongoing = rent * 0.1  # Estimated other costs as 10% of the rent.
         return mortgage_payment, interest_payment + other_costs_ongoing, total_one_time, initial_dep, rent
@@ -342,7 +341,7 @@ class MoneySimulator:
         data_all_scenario = {x: [] for x in data_str}
 
         for i in range(scenarios):
-            data_scenario = self.saving_calc(years)
+            data_scenario = self.__saving_calc(years)
 
             for cat_data in data_str:
                 data_all_scenario[cat_data].append(data_scenario[cat_data])

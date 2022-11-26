@@ -16,8 +16,8 @@ bonus_spend_rate: float = 0.2  # Proportion of bonus after tax that is spent on 
 month_non_rent: float = 1.4  # Amount in thousands spent per month not including rent.
 spend_grow: float = 1.1  # Proportion per year that non-rent spending will grow by
 
-year_home: int = 0  # Years living at home. Note that default order is:  live at home -> rent -> buy house
-year_rent: int = 10  # Years renting out of the house after living at home but before buying a house
+year_home: int = 1  # Years living at home. Note that default order is:  live at home -> rent -> buy house
+year_rent: int = 2  # Years renting out of the house after living at home but before buying a house
 
 rent_home: float = 0.4  # Cost of living at home
 rent_away: float = 2.1  # Cost of renting outside the home
@@ -25,7 +25,7 @@ rent_away: float = 2.1  # Cost of renting outside the home
 deposit: float = 0.25  # Deposit on house as a proportion of house cost.
 house_cost: float = 600  # Price paid for a house in thousands.
 mortgage_rate: float = 0.075  # Interest rate on mortgage.
-mortgage_length: float = 30  # Length of mortgage in years.
+mortgage_length: int = 30  # Length of mortgage in years.
 house_type: str = 'normal'  # Type of purchase on house, "normal" or "htb".
 
 house_inf: float = 0.09  # Rate on house price inflation as a %
