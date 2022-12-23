@@ -49,13 +49,12 @@ class MoneySimulator:
         self.colour_main = wealth_config.color_main
 
         house_label = 'No house. ' if len(salary_list) < self.year_home + self.year_rent \
-            else self.house_type + ' in ' + str(self.year_home +
-                                                self.year_rent) + 'y at ' + str(self.house_cost) + 'k. '
+            else f'{self.house_type} in {str(self.year_home + self.year_rent)}y at {str(self.house_cost)}k.'
         btl_label = 'No BTL. ' if len(wealth_config.btl_dict) == 0 else \
-            str(len(wealth_config.btl_dict)) + ' BTL house(s). '
-        rent_label = str(self.year_home) + 'y home. ' + str(self.year_rent) + 'y rent. '
+            f'{str(len(wealth_config.btl_dict))} BTL house(s). '
+        rent_label = f'{str(self.year_home)}y home. {str(self.year_rent)}y rent. '
 
-        self.label = house_label + btl_label + rent_label
+        self.label = f'{house_label} {btl_label} {rent_label}'
 
         self.show_extra = wealth_config.show_extra
         self.show_breakdown = wealth_config.show_breakdown
@@ -328,6 +327,25 @@ class MoneySimulator:
         other_costs_ongoing = rent * 0.1  # Estimated other costs as 10% of the rent.
         return mortgage_payment, interest_payment + other_costs_ongoing, total_one_time, initial_dep, rent
 
+    @staticmethod
+    def __format_data(data_all_scenario: dict, data_str: list) -> (pd.DataFrame, dict):
+        dict_df = {}
+        for cat in data_str:
+            dict_df[cat] = pd.DataFrame(data_all_scenario[cat]).T
+
+        df = pd.DataFrame(data={'Mean': dict_df['Current Value'].mean(axis=1),
+                                'Liquid': dict_df['Liquid'].mean(axis=1),
+                                'Illiquid': dict_df['Illiquid'].mean(axis=1),
+                                'Rental Income': dict_df['Rental Income'].mean(axis=1),
+                                'BTL Costs': dict_df['BTL Costs'].mean(axis=1),
+                                'BTL Capital': dict_df['BTL Capital'].mean(axis=1),
+                                'Mean - 2 sigma': dict_df['Current Value'].mean(axis=1) - 2 *
+                                                  dict_df['Current Value'].std(axis=1),
+                                'Mean + 2 sigma': dict_df['Current Value'].mean(axis=1) + 2 *
+                                                  dict_df['Current Value'].std(axis=1),
+                                'Std': dict_df['Current Value'].std(axis=1)})
+        return df, dict_df
+
     def run_scenario(self, scenarios: int = 1000) -> pd.DataFrame:
         """
         Run a set of random scenarios.
@@ -349,21 +367,7 @@ class MoneySimulator:
             if self.show_extra:
                 plt.plot(years_array, data_scenario['Current Value'], linewidth=0.1, color='b')
 
-        dict_df = {}
-        for cat in data_str:
-            dict_df[cat] = pd.DataFrame(data_all_scenario[cat]).T
-
-        df = pd.DataFrame(data={'Mean': dict_df['Current Value'].mean(axis=1),
-                                'Liquid': dict_df['Liquid'].mean(axis=1),
-                                'Illiquid': dict_df['Illiquid'].mean(axis=1),
-                                'Rental Income': dict_df['Rental Income'].mean(axis=1),
-                                'BTL Costs': dict_df['BTL Costs'].mean(axis=1),
-                                'BTL Capital': dict_df['BTL Capital'].mean(axis=1),
-                                'Mean - 2 sigma': dict_df['Current Value'].mean(axis=1) - 2 *
-                                                  dict_df['Current Value'].std(axis=1),
-                                'Mean + 2 sigma': dict_df['Current Value'].mean(axis=1) + 2 *
-                                                  dict_df['Current Value'].std(axis=1),
-                                'Std': dict_df['Current Value'].std(axis=1)})
+        df, self.dict_df = self.__format_data(data_all_scenario=data_all_scenario, data_str=data_str)
 
         plt.xlabel('Years')
         plt.ylabel('Net Worth £ (k)')
@@ -377,8 +381,6 @@ class MoneySimulator:
             plt.plot(years_array, df['Illiquid'], '--', linewidth=2, color='purple', label='Illiquid Assets')
 
         plt.legend(loc='best')
-
-        self.dict_df = dict_df
 
         return df
 
