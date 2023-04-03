@@ -13,18 +13,18 @@ r_std: float = 0.10  # Standard deviation on the return on investments.
 bonus_std_prop: float = 0.5  # Standard deviation on bonuses as a proportion of each year's bonus
 bonus_spend_rate: float = 0.2  # Proportion of bonus after tax that is spent on non-asset purchases
 
-month_non_rent: float = 1.4  # Amount in thousands spent per month not including rent.
-spend_grow: float = 1.1  # Proportion per year that non-rent spending will grow by
+month_non_rent: float = 1.5  # Amount in thousands spent per month not including rent.
+spend_grow: float = 1.05  # Proportion per year that non-rent spending will grow by
 
-year_home: int = 1  # Years living at home. Note that default order is:  live at home -> rent -> buy house
+year_home: int = 0  # Years living at home. Note that default order is:  live at home -> rent -> buy house
 year_rent: int = 1  # Years renting out of the house after living at home but before buying a house
 
 rent_home: float = 0.4  # Cost of living at home
-rent_away: float = 2.1  # Cost of renting outside the home
+rent_away: float = 2.3  # Cost of renting outside the home
 
-deposit: float = 0.25  # Deposit on house as a proportion of house cost.
-house_cost: float = 450  # Price paid for a house in thousands.
-mortgage_rate: float = 0.055  # Interest rate on mortgage.
+deposit: float = 0.15  # Deposit on house as a proportion of house cost.
+house_cost: float = 600  # Price paid for a house in thousands.
+mortgage_rate: float = 0.05  # Interest rate on mortgage.
 mortgage_length: int = 30  # Length of mortgage in years.
 house_type: str = 'normal'  # Type of purchase on house, "normal" or "htb".
 

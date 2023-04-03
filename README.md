@@ -11,6 +11,7 @@ and house price change are all treated as random variables.
 
 The code fully takes into account income tax and national insurance
 calculations as they will be from April 2023 (As of November 2022).
+Stamp Duty calculations correct as of April 2023.
 
 Student Loan contributions and Shared ownership calculations currently not included,
 however these can be added if needed.

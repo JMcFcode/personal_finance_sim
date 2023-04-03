@@ -177,7 +177,9 @@ class MoneySimulator:
                 ill_inv = ill_inv + equity_loan
 
             if i + 1 == self.year_home + self.year_rent:
-                if len(wealth_config.btl_dict) != 0 and i + 1 < min(wealth_config.btl_dict.keys()):
+                if len(wealth_config.btl_dict) == 0:
+                    first_home = True
+                elif len(wealth_config.btl_dict) != 0 and i + 1 < min(wealth_config.btl_dict.keys()):
                     first_home = True
                 else:
                     first_home = False
@@ -250,10 +252,11 @@ class MoneySimulator:
     @staticmethod
     def __stamp_duty_calc(house_cost: float, main_residence: bool = True, first_home: bool = True) -> float:
         """
-        Calculate the stamp duty when buying a house
+        Calculate the stamp duty when buying a house.
+        These will be done based on first time rates
         """
-        if house_cost <= 500 and first_home:
-            stamp_duty = 0.05 * (max(house_cost, 300) - 300)
+        if house_cost <= 625 and first_home:
+            stamp_duty = 0.05 * (house_cost - 425)
             return stamp_duty
         else:
             sdlt_rates = [0, 0.02, 0.05, 0.1, 0.12]
@@ -297,7 +300,7 @@ class MoneySimulator:
         interest_payment = (monthly_payment * 12 * mortgage_length - mortgage) / (mortgage_length * 12)
         return monthly_payment, interest_payment
 
-    def __btl_finance(self, year: int, year_purchased: int, list_info: list) -> (float, float, float, float):
+    def __btl_finance(self, year: int, year_purchased: int, list_info: list) -> (float, float, float, float, float):
         """
         Calculate the net cost of BTL in any given year.
         """
